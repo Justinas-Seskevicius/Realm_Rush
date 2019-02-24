@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinding : MonoBehaviour
+public class Pathfinder : MonoBehaviour
 {
     [SerializeField] Waypoint startWaypoint;
     [SerializeField] Waypoint endWaypoint;
-    [SerializeField] bool isRunning = true;
+    List<Waypoint> path = new List<Waypoint>();
+
+    bool isRunning = true;
+    Waypoint searchCenter;
 
     Dictionary<Vector2Int, Waypoint> grid = new Dictionary<Vector2Int, Waypoint>();
     Queue<Waypoint> queue = new Queue<Waypoint>();
@@ -19,33 +22,46 @@ public class Pathfinding : MonoBehaviour
         Vector2Int.left
     };
 
-    // Start is called before the first frame update
-    void Start()
+    public List<Waypoint> GetPath()
     {
         LoadBlocks();
         MarkStartEndBlocks();
-        Pathfind();
-        //ExploreNeighbours();
+        BreadthFirstSearch();
+        CreatePath();
+        return path;
     }
 
-    private void Pathfind()
+    private void CreatePath()
+    {
+        path.Add(endWaypoint);
+        Waypoint previous = endWaypoint.exploredFrom;
+        while(previous != startWaypoint)
+        {
+            path.Add(previous);
+            previous = previous.exploredFrom;
+        }
+        path.Add(startWaypoint);
+        path.Reverse();
+    }
+
+    private void BreadthFirstSearch()
     {
         queue.Enqueue(startWaypoint);
         while(queue.Count > 0 && isRunning)
         {
-            var searchCenter = queue.Dequeue();
-            Debug.Log("Search centre is : " + searchCenter);
-            HaltIfEndFound(searchCenter);
+            searchCenter = queue.Dequeue();
+            HaltIfEndFound();
+            ExploreNeighbours();
+            searchCenter.isExplored = true;
         }
 
         Debug.Log("Finished pathfinding?");
     }
 
-    private void HaltIfEndFound(Waypoint searchCenter)
+    private void HaltIfEndFound()
     {
         if (searchCenter == endWaypoint)
         {
-            Debug.Log("Found the end waypoint!");
             isRunning = false;
         }
     }
@@ -56,16 +72,22 @@ public class Pathfinding : MonoBehaviour
 
         foreach (Vector2Int direction in directions)
         {
-            Vector2Int explorationCoordinates = startWaypoint.GetGridPos() + direction;
-            Debug.Log("Exploring " + explorationCoordinates);
-            try
+            Vector2Int neighbourCoordinates = searchCenter.GetGridPos() + direction;
+            if(grid.ContainsKey(neighbourCoordinates))
             {
-                grid[explorationCoordinates].SetTopColor(Color.cyan);
+                QueueNeighbour(neighbourCoordinates);
             }
-            catch
-            {
-                Debug.Log(explorationCoordinates + " - such neighbour does not exist");
-            }
+        }
+    }
+
+    private void QueueNeighbour(Vector2Int neighbourCoordinates)
+    {
+        Waypoint neighbour = grid[neighbourCoordinates];
+
+        if(!neighbour.isExplored && !queue.Contains(neighbour))
+        {
+            queue.Enqueue(neighbour);
+            neighbour.exploredFrom = searchCenter;
         }
     }
 
