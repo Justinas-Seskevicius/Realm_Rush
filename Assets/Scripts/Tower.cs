@@ -7,8 +7,9 @@ public class Tower : MonoBehaviour
 {
     [SerializeField] float attackRange = 30f;
     [SerializeField] Transform objectToPan;
-    [SerializeField] Transform targetEnemy;
 
+
+    Transform targetEnemy;
     ParticleSystem lasers;
 
     private void Start()
@@ -18,6 +19,8 @@ public class Tower : MonoBehaviour
 
     void Update()
     {
+        SetTargetEnemy();
+
         if(targetEnemy)
         {
             AttackEnemy();
@@ -26,6 +29,34 @@ public class Tower : MonoBehaviour
         {
             ActivateLasers(false);
         }
+    }
+
+    private void SetTargetEnemy()
+    {
+        var sceneEnemies = FindObjectsOfType<EnemyCollider>();
+        if(sceneEnemies.Length > 0)
+        {
+            Transform closestEnemy = sceneEnemies[0].transform;
+
+            foreach(EnemyCollider enemy in sceneEnemies)
+            {
+                closestEnemy = GetClosestEnemy(closestEnemy, enemy.transform);
+            }
+            targetEnemy = closestEnemy;
+        }
+    }
+
+    private Transform GetClosestEnemy(Transform transformA, Transform transformB)
+    {
+        float distanceA = Vector3.Distance(transform.position, transformA.position);
+        float distanceB = Vector3.Distance(transform.position, transformB.position);
+
+        if (distanceA < distanceB)
+        {
+            return transformA;
+        }
+
+        return transformB;
     }
 
     private void AttackEnemy()
