@@ -168,7 +168,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 17
+      scalar: 150
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -865,7 +865,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2
+      scalar: 1
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -4743,8 +4743,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39978eab1e23bc543993a757462fef92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackRange: 30
   objectToPan: {fileID: 8569620754054582211}
-  targetEnemy: {fileID: 0}
 --- !u!1001 &8566966813638278059
 PrefabInstance:
   m_ObjectHideFlags: 0

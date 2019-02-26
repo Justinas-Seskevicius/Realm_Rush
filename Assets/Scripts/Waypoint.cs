@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Waypoint : MonoBehaviour
-{
+{ 
     public bool isExplored = false;
+    public bool isPlaceable = true;
     public Waypoint exploredFrom;
+
+    [SerializeField] Tower towerPrefab;
 
     const int gridSize = 10;
     Vector2Int gridPos;
@@ -30,6 +33,10 @@ public class Waypoint : MonoBehaviour
 
     private void OnMouseOver()
     {
-        Debug.Log("I am currently over " + gameObject.name);
+        if(Input.GetMouseButtonDown(0) && isPlaceable)
+        {
+            Instantiate(towerPrefab, transform.position, Quaternion.identity);
+            isPlaceable = false;
+        }
     }
 }
