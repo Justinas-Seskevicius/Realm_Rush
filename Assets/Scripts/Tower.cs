@@ -8,7 +8,7 @@ public class Tower : MonoBehaviour
     [SerializeField] float attackRange = 30f;
     [SerializeField] Transform objectToPan;
 
-
+    Waypoint baseWaypoint;
     Transform targetEnemy;
     ParticleSystem lasers;
 
@@ -78,4 +78,7 @@ public class Tower : MonoBehaviour
         var emision = lasers.emission;
         emision.enabled = isActive;
     }
+
+    public Waypoint GetBaseWaypoint() { return baseWaypoint; }
+    public void SetBaseWaypoint(Waypoint newBaseWaypoint) { baseWaypoint = newBaseWaypoint; }
 }
