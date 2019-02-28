@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] float dwellTime = 1f;
+    [SerializeField] ParticleSystem selfDestructPS;
 
 
     void Start()
@@ -16,12 +17,20 @@ public class EnemyMovement : MonoBehaviour
 
     IEnumerator Patrol(List<Waypoint> path)
     {
-        Debug.Log("Starting patrol");
         foreach (Waypoint waypoint in path)
         {
             transform.position = waypoint.transform.position;
             yield return new WaitForSeconds(dwellTime);
         }
-        Debug.Log("Ending patrol");
+        SelfDestruct();
+    }
+
+    private void SelfDestruct()
+    {
+        var vfx = Instantiate(selfDestructPS, transform.position, Quaternion.identity);
+        vfx.Play();
+        float destroyDelay = vfx.main.duration;
+        Destroy(vfx.gameObject, destroyDelay);
+        Destroy(gameObject);
     }
 }

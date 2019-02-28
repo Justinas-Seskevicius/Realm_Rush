@@ -6,7 +6,7 @@ public class EnemyCollider : MonoBehaviour
 {
     [SerializeField] int hitPoints = 5;
     [SerializeField] ParticleSystem hitParticleSystem;
-    [SerializeField] GameObject deathVFX;
+    [SerializeField] ParticleSystem deathVFX;
 
     private void OnParticleCollision(GameObject other)
     {
@@ -18,12 +18,20 @@ public class EnemyCollider : MonoBehaviour
         hitPoints--;
         if (hitPoints <= 0)
         {
-            Instantiate(deathVFX, transform.position, Quaternion.identity);
-            Destroy(gameObject);
+            KillEnemy();
         }
         else
         {
             hitParticleSystem.Play();
         }
+    }
+
+    private void KillEnemy()
+    {
+        var vfx = Instantiate(deathVFX, transform.position, Quaternion.identity);
+        vfx.Play();
+        float destroyDelay = vfx.main.duration;
+        Destroy(vfx.gameObject, destroyDelay);
+        Destroy(gameObject);
     }
 }
