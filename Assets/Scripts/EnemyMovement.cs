@@ -6,6 +6,7 @@ public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] float dwellTime = 1f;
     [SerializeField] ParticleSystem selfDestructPS;
+    [SerializeField] AudioClip selfDestructSFX;
 
 
     void Start()
@@ -28,6 +29,7 @@ public class EnemyMovement : MonoBehaviour
     private void SelfDestruct()
     {
         var vfx = Instantiate(selfDestructPS, transform.position, Quaternion.identity);
+        AudioSource.PlayClipAtPoint(selfDestructSFX, Camera.main.transform.position);
         vfx.Play();
         float destroyDelay = vfx.main.duration;
         Destroy(vfx.gameObject, destroyDelay);

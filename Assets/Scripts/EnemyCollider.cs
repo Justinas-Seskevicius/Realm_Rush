@@ -7,6 +7,8 @@ public class EnemyCollider : MonoBehaviour
     [SerializeField] int hitPoints = 5;
     [SerializeField] ParticleSystem hitParticleSystem;
     [SerializeField] ParticleSystem deathVFX;
+    [SerializeField] AudioClip hitSFX;
+    [SerializeField] AudioClip deathSFX;
 
     private void OnParticleCollision(GameObject other)
     {
@@ -22,6 +24,7 @@ public class EnemyCollider : MonoBehaviour
         }
         else
         {
+            GetComponent<AudioSource>().PlayOneShot(hitSFX);
             hitParticleSystem.Play();
         }
     }
@@ -29,6 +32,7 @@ public class EnemyCollider : MonoBehaviour
     private void KillEnemy()
     {
         var vfx = Instantiate(deathVFX, transform.position, Quaternion.identity);
+        AudioSource.PlayClipAtPoint(deathSFX, Camera.main.transform.position);
         vfx.Play();
         float destroyDelay = vfx.main.duration;
         Destroy(vfx.gameObject, destroyDelay);
